@@ -19,35 +19,35 @@ resource "aws_iam_role" "codepipeline" {
 EOF
 }
 
-# resource "aws_iam_role_policy" "codebuild_policy" {
-#   name = "codebuild_policy_s3_${var.name}-${var.environment}"
-#   role = "${var.codebuild_role_arn}"
-#   policy = <<EOF
-# {
-#   "Version": "2012-10-17",
-#   "Statement": [
-#     {
-#       "Effect":"Allow",
-#       "Action": [
-#         "s3:GetObject",
-#         "s3:*",
-#         "s3:GetObjectVersion",
-#         "s3:GetBucketVersioning"
-#       ],
-#       "Resource": [
-#         "${aws_s3_bucket.cp_bucket.arn}",
-#         "${aws_s3_bucket.cp_bucket.arn}/*"
-#       ]
-#     },
-#     {
-#       "Effect":"Allow",
-#       "Action": ["ecr:*"],
-#       "Resource": ["*"]
-#     }
-#   ]
-# }
-# EOF
-# }
+resource "aws_iam_role_policy" "codebuild_policy" {
+  name = "codebuild_policy_s3_${var.name}-${var.environment}"
+  role = "${var.codebuild_role_arn}"
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect":"Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:*",
+        "s3:GetObjectVersion",
+        "s3:GetBucketVersioning"
+      ],
+      "Resource": [
+        "${aws_s3_bucket.cp_bucket.arn}",
+        "${aws_s3_bucket.cp_bucket.arn}/*"
+      ]
+    },
+    {
+      "Effect":"Allow",
+      "Action": ["ecr:*"],
+      "Resource": ["*"]
+    }
+  ]
+}
+EOF
+}
 
 resource "aws_iam_role_policy" "codepipeline_policy" {
   name = "codepipeline_policy_${var.name}-${var.environment}"
