@@ -27,6 +27,10 @@ variable "family_name" {}
 variable "codebuild_project_name" {}
 variable "codebuild_role_arn" {}
 
+variable "tags" {
+  default = {}
+}
+
 variable "namespace" {
   default = "global"
 }

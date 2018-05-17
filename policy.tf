@@ -34,8 +34,8 @@ resource "aws_iam_role_policy" "codebuild_policy" {
         "s3:GetBucketVersioning"
       ],
       "Resource": [
-        "${aws_s3_bucket.cp_bucket.arn}",
-        "${aws_s3_bucket.cp_bucket.arn}/*"
+        "${aws_s3_bucket.codepipeline_bucket.arn}",
+        "${aws_s3_bucket.codepipeline_bucket.arn}/*"
       ]
     },
     {
@@ -65,8 +65,8 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
         "s3:GetBucketVersioning"
       ],
       "Resource": [
-        "${aws_s3_bucket.cp_bucket.arn}",
-        "${aws_s3_bucket.cp_bucket.arn}/*"
+        "${aws_s3_bucket.codepipeline_bucket.arn}",
+        "${aws_s3_bucket.codepipeline_bucket.arn}/*"
       ]
     },
     {
