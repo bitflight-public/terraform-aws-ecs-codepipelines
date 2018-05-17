@@ -70,7 +70,7 @@ resource "aws_codepipeline" "pipeline" {
   name     = "${module.pipeline_label.id}"
   role_arn = "${aws_iam_role.codepipeline.arn}"
 
-  tags = "${module.pipeline_label.tags}"
+  #tags = "${module.pipeline_label.tags}"
 
   artifact_store {
     location = "${aws_s3_bucket.codepipeline_bucket.bucket}"
