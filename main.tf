@@ -1,5 +1,8 @@
 ### For looking up info from the other Terraform States
-variable "name"           { description = "The project name" }
+variable "name" {
+  description = "The project name"
+}
+
 # variable "app_name"           { 
 #   default = ""
 #   description = "The project name" 
@@ -8,11 +11,16 @@ variable "name"           { description = "The project name" }
 ### Local Variables
 
 #Github Variables
-variable "gh_owner"     {  }
-variable "gh_repo"      {  }
-variable "gh_branch"    {  }
-variable "gh_token"     { }
-variable "environment"  { default = "staging"}
+variable "gh_owner" {}
+
+variable "gh_repo" {}
+variable "gh_branch" {}
+variable "gh_token" {}
+
+variable "environment" {
+  default = "staging"
+}
+
 variable "cluster_name" {}
 variable "service_name" {}
 variable "family_name" {}
@@ -31,10 +39,9 @@ module "pipeline_label" {
   source = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.3.5"
 
   namespace = "${var.namespace}"
-  stage = "${var.stage}"
-  name = "pipeline"
-  tags = "${merge(map("ManagedBy", "Terraform"), var.tags)}"
-
+  stage     = "${var.stage}"
+  name      = "pipeline"
+  tags      = "${merge(map("ManagedBy", "Terraform"), var.tags)}"
 }
 
 # locals {
@@ -43,13 +50,14 @@ module "pipeline_label" {
 # }
 resource "aws_s3_bucket" "codepipeline_bucket" {
   bucket_prefix = "${module.pipeline_label.id}"
-  acl    = "private"
+  acl           = "private"
   force_destroy = true
 }
 
 output "bucket_id" {
   value = "${aws_s3_bucket.codepipeline_bucket.bucket}"
 }
+
 # data "aws_kms_alias" "s3kmskey" {
 #   name = "alias/myKmsKey"
 # }
@@ -63,6 +71,7 @@ resource "aws_codepipeline" "pipeline" {
   artifact_store {
     location = "${aws_s3_bucket.cp_bucket.bucket}"
     type     = "S3"
+
     # encryption_key {
     #   id   = "${data.aws_kms_alias.s3kmskey.arn}"
     #   type = "KMS"
@@ -81,10 +90,10 @@ resource "aws_codepipeline" "pipeline" {
       output_artifacts = ["app_artifacts"]
 
       configuration {
-        OAuthToken = "${var.gh_token}"
-        Owner      = "${var.gh_owner}"
-        Repo       = "${var.gh_repo}"
-        Branch     = "${var.gh_branch}"
+        OAuthToken           = "${var.gh_token}"
+        Owner                = "${var.gh_owner}"
+        Repo                 = "${var.gh_repo}"
+        Branch               = "${var.gh_branch}"
         PollForSourceChanges = "true"
       }
     }
@@ -94,13 +103,13 @@ resource "aws_codepipeline" "pipeline" {
     name = "Build"
 
     action {
-      name            = "Build"
-      category        = "Build"
-      owner           = "AWS"
-      provider        = "CodeBuild"
-      input_artifacts = ["app_artifacts"]
+      name             = "Build"
+      category         = "Build"
+      owner            = "AWS"
+      provider         = "CodeBuild"
+      input_artifacts  = ["app_artifacts"]
       output_artifacts = ["task_artifacts"]
-      version         = "1"
+      version          = "1"
 
       configuration {
         ProjectName = "${var.codebuild_project_name}"
@@ -110,16 +119,19 @@ resource "aws_codepipeline" "pipeline" {
 
   stage {
     name = "Deploy"
+
     action {
-      name     = "Deploy"
-      version  = "1"
-      category = "Deploy"
-      owner    = "AWS"
-      provider = "ECS"
+      name            = "Deploy"
+      version         = "1"
+      category        = "Deploy"
+      owner           = "AWS"
+      provider        = "ECS"
       input_artifacts = ["task_artifacts"]
+
       configuration {
         ClusterName = "${var.cluster_name}"
         ServiceName = "${var.service_name}"
+
         # FileName    = "task_definition.json"
       }
     }
@@ -129,6 +141,3 @@ resource "aws_codepipeline" "pipeline" {
 data "aws_caller_identity" "default" {}
 
 data "aws_region" "default" {}
-
-
-

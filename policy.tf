@@ -1,5 +1,3 @@
-
-
 resource "aws_iam_role" "codepipeline" {
   name = "role-${module.pipeline_label.id}"
 
@@ -22,6 +20,7 @@ EOF
 resource "aws_iam_role_policy" "codebuild_policy" {
   name = "s3-policy-codebuild-${module.pipeline_label.id}"
   role = "${var.codebuild_role_arn}"
+
   policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -52,6 +51,7 @@ EOF
 resource "aws_iam_role_policy" "codepipeline_policy" {
   name = "policy-${module.pipeline_label.id}"
   role = "${aws_iam_role.codepipeline.id}"
+
   policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -89,11 +89,11 @@ EOF
 
 resource "aws_iam_role_policy_attachment" "codepipeline_policy_attachment_ECR" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerServiceFullAccess"
-  role      = "${aws_iam_role.codepipeline.id}"
+  role       = "${aws_iam_role.codepipeline.id}"
 }
-
 
 # resource "aws_iam_role_policy_attachment" "codebuild_policy_attachment" {
 #   policy_arn = "${aws_iam_policy.codebuild_policy.arn}"
 #   role      = "${aws_iam_role.codebuild_role.id}"
 # }
+
