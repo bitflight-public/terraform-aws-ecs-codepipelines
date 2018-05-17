@@ -1,7 +1,7 @@
 
 
 resource "aws_iam_role" "codepipeline" {
-  name = "codepipeline-role-${var.name}-${var.environment}"
+  name = "role-${module.pipeline_label.id}"
 
   assume_role_policy = <<EOF
 {
@@ -20,7 +20,7 @@ EOF
 }
 
 resource "aws_iam_role_policy" "codebuild_policy" {
-  name = "codebuild_policy_s3_${var.name}-${var.environment}"
+  name = "s3-policy-codebuild-${module.pipeline_label.id}"
   role = "${var.codebuild_role_arn}"
   policy = <<EOF
 {
@@ -50,7 +50,7 @@ EOF
 }
 
 resource "aws_iam_role_policy" "codepipeline_policy" {
-  name = "codepipeline_policy_${var.name}-${var.environment}"
+  name = "policy-${module.pipeline_label.id}"
   role = "${aws_iam_role.codepipeline.id}"
   policy = <<EOF
 {
