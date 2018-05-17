@@ -73,7 +73,7 @@ resource "aws_codepipeline" "pipeline" {
   tags = "${module.pipeline_label.tags}"
 
   artifact_store {
-    location = "${aws_s3_bucket.cp_bucket.bucket}"
+    location = "${aws_s3_bucket.codepipeline_bucket.bucket}"
     type     = "S3"
 
     # encryption_key {
